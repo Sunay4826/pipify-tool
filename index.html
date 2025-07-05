@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="./assets/pip_1.svg">
+  <title>Advanced PiPify - Professional Picture-in-Picture Tool</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-play-circle"></i>
+          <h1>Advanced PiPify</h1>
+        </div>
+        <div class="header-controls">
+          <button id="themeToggle" class="theme-toggle" title="Toggle Theme">
+            <i class="fas fa-moon"></i>
+          </button>
+          <button id="settingsToggle" class="settings-toggle" title="Settings">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <div class="action-grid">
+          <div class="action-card" data-mode="screen">
+            <div class="action-icon">
+              <i class="fas fa-desktop"></i>
+            </div>
+            <h3>Screen Capture</h3>
+            <p>Capture entire screen</p>
+            <button class="action-btn">Start</button>
+          </div>
+          
+          <div class="action-card" data-mode="window">
+            <div class="action-icon">
+              <i class="fas fa-window-maximize"></i>
+            </div>
+            <h3>Window Capture</h3>
+            <p>Capture specific window</p>
+            <button class="action-btn">Start</button>
+          </div>
+          
+          <div class="action-card" data-mode="tab">
+            <div class="action-icon">
+              <i class="fas fa-tab"></i>
+            </div>
+            <h3>Tab Capture</h3>
+            <p>Capture browser tab</p>
+            <button class="action-btn">Start</button>
+          </div>
+          
+          <div class="action-card" data-mode="camera">
+            <div class="action-icon">
+              <i class="fas fa-camera"></i>
+            </div>
+            <h3>Camera</h3>
+            <p>Use camera feed</p>
+            <button class="action-btn">Start</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Active PiP Windows -->
+      <section class="pip-windows" id="pipWindows">
+        <h2>Active PiP Windows</h2>
+        <div class="pip-list" id="pipList">
+          <div class="no-pip-message">
+            <i class="fas fa-window-restore"></i>
+            <p>No active PiP windows</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Controls Panel -->
+      <section class="controls-panel" id="controlsPanel" style="display: none;">
+        <h2>PiP Controls</h2>
+        <div class="control-grid">
+          <div class="control-group">
+            <label>Size</label>
+            <div class="size-controls">
+              <button class="control-btn" data-action="resize" data-size="small">Small</button>
+              <button class="control-btn" data-action="resize" data-size="medium">Medium</button>
+              <button class="control-btn" data-action="resize" data-size="large">Large</button>
+            </div>
+          </div>
+          
+          <div class="control-group">
+            <label>Position</label>
+            <div class="position-controls">
+              <button class="control-btn" data-action="position" data-pos="top-left">↖</button>
+              <button class="control-btn" data-action="position" data-pos="top-right">↗</button>
+              <button class="control-btn" data-action="position" data-pos="bottom-left">↙</button>
+              <button class="control-btn" data-action="position" data-pos="bottom-right">↘</button>
+            </div>
+          </div>
+          
+          <div class="control-group">
+            <label>Audio</label>
+            <div class="audio-controls">
+              <button class="control-btn" data-action="audio" data-audio="mute">
+                <i class="fas fa-volume-mute"></i>
+              </button>
+              <button class="control-btn" data-action="audio" data-audio="unmute">
+                <i class="fas fa-volume-up"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Panel -->
+      <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-panel">
+          <div class="settings-header">
+            <h2>Settings</h2>
+            <button class="close-btn" id="closeSettings">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          
+          <div class="settings-content">
+            <div class="setting-group">
+              <h3>General</h3>
+              <div class="setting-item">
+                <label>Auto-start PiP</label>
+                <input type="checkbox" id="autoStartPiP">
+              </div>
+              <div class="setting-item">
+                <label>Remember window positions</label>
+                <input type="checkbox" id="rememberPositions">
+              </div>
+              <div class="setting-item">
+                <label>Default PiP size</label>
+                <select id="defaultSize">
+                  <option value="small">Small</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="setting-group">
+              <h3>Keyboard Shortcuts</h3>
+              <div class="shortcut-list">
+                <div class="shortcut-item">
+                  <span>Toggle PiP</span>
+                  <kbd>Ctrl + Shift + P</kbd>
+                </div>
+                <div class="shortcut-item">
+                  <span>Close PiP</span>
+                  <kbd>Esc</kbd>
+                </div>
+                <div class="shortcut-item">
+                  <span>Toggle Audio</span>
+                  <kbd>Ctrl + M</kbd>
+                </div>
+              </div>
+            </div>
+            
+            <div class="setting-group">
+              <h3>Advanced</h3>
+              <div class="setting-item">
+                <label>Enable multiple PiP windows</label>
+                <input type="checkbox" id="multiplePiP" checked>
+              </div>
+              <div class="setting-item">
+                <label>PiP quality</label>
+                <select id="pipQuality">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+      <div class="status-content">
+        <div class="status-item">
+          <i class="fas fa-circle status-indicator"></i>
+          <span id="statusText">Ready</span>
+        </div>
+        <div class="status-item">
+          <i class="fas fa-window-restore"></i>
+          <span id="pipCount">0 PiP windows</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Notification System -->
+  <div class="notification-container" id="notificationContainer"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
