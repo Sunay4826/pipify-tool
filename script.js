@@ -98,16 +98,34 @@ class AdvancedPiPify {
     async startCapture(mode) {
         try {
             this.updateStatus('Starting capture...');
-            
-            const constraints = this.getConstraintsForMode(mode);
-            const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
-            
+
+            let stream;
+            if (mode === 'camera') {
+                // Use camera and optional microphone for camera mode
+                const audioEnabled = this.settings.audioEnabled !== false;
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        frameRate: { ideal: 30 }
+                    },
+                    audio: audioEnabled
+                });
+            } else {
+                // Screen/window/tab are all handled by the browser picker in getDisplayMedia
+                const audioEnabled = this.settings.audioEnabled !== false;
+                stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: audioEnabled
+                });
+            }
+
             this.currentStream = stream;
             await this.createPiPWindow(stream, mode);
-            
+
             this.notificationSystem.show('success', 'Capture Started', `${mode.charAt(0).toUpperCase() + mode.slice(1)} capture activated`);
             this.updateStatus('Capture active');
-            
+
         } catch (error) {
             console.error('Capture error:', error);
             this.handleCaptureError(error);
@@ -115,29 +133,21 @@ class AdvancedPiPify {
     }
 
     getConstraintsForMode(mode) {
-        const baseConstraints = {
-            audio: this.settings.audioEnabled !== false
-        };
-
-        switch (mode) {
-            case 'screen':
-                return { ...baseConstraints, mediaSource: 'screen' };
-            case 'window':
-                return { ...baseConstraints, mediaSource: 'window' };
-            case 'tab':
-                return { ...baseConstraints, mediaSource: 'tab' };
-            case 'camera':
-                return { 
-                    video: { 
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 },
-                        frameRate: { ideal: 30 }
-                    },
-                    audio: baseConstraints.audio
-                };
-            default:
-                return baseConstraints;
+        // Kept for backward-compatibility; not used for capture anymore.
+        // Screen/window/tab selection is handled by the browser UI in getDisplayMedia.
+        // Camera uses getUserMedia.
+        const audioEnabled = this.settings.audioEnabled !== false;
+        if (mode === 'camera') {
+            return {
+                video: {
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                    frameRate: { ideal: 30 }
+                },
+                audio: audioEnabled
+            };
         }
+        return { video: true, audio: audioEnabled };
     }
 
     async createPiPWindow(stream, mode) {
@@ -268,7 +278,7 @@ class AdvancedPiPify {
         const icons = {
             screen: 'desktop',
             window: 'window-maximize',
-            tab: 'tab',
+            tab: 'globe',
             camera: 'camera'
         };
         return icons[mode] || 'play';

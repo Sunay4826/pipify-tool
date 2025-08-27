@@ -129,9 +129,11 @@ A sophisticated, modern Picture-in-Picture (PiP) application that transforms you
 ## 🔧 Installation & Usage
 
 ### Quick Start
-1. Open `index.html` in a modern web browser
-2. Click any capture mode to start
-3. Select your screen, window, or tab
+1. Serve the folder locally (required by browser security for screen/camera capture):
+   - Python: `python3 -m http.server 5173`
+   - Node: `npx serve . -p 5173 --yes`
+2. Open `http://localhost:5173` in a modern browser
+3. Click any capture mode to start and select a source in the picker
 4. Enjoy your PiP experience!
 
 ### Browser Requirements
@@ -147,11 +149,10 @@ A sophisticated, modern Picture-in-Picture (PiP) application that transforms you
 
 ## 🚀 Advanced Usage
 
-### Multiple PiP Windows
-1. Start multiple capture sessions
-2. Each PiP window is managed independently
-3. Use the PiP list to track active windows
-4. Close individual windows or all at once
+### Picture-in-Picture Limitations
+- Most browsers allow only one active PiP window per document/video element.
+- Size and position of PiP windows are controlled by the browser and cannot be set programmatically.
+- Behavior may vary between Chrome, Edge, Firefox, and Safari.
 
 ### Settings Configuration
 1. Click the settings icon (⚙️)
